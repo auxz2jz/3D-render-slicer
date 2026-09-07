@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#111827" />
-  <title>RenderSlicer Studio</title>
+  <title>Render Studio</title>
   <link rel="stylesheet" href="./styles.css" />
   <script type="importmap">
   {
@@ -16,207 +16,156 @@
   </script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand-wrap">
-      <div class="brand">RenderSlicer <span>Studio</span></div>
-      <div class="version">v0.1.0</div>
-    </div>
-    <div class="top-actions">
-      <button id="undoBtn" class="icon-btn" title="Undo">↶</button>
-      <button id="redoBtn" class="icon-btn" title="Redo">↷</button>
-      <button id="saveProjectBtn" class="secondary">Save Project</button>
-      <label class="secondary file-btn">Open Project<input id="openProjectInput" type="file" accept="application/json,.json"></label>
-    </div>
-  </header>
-
-  <nav class="mode-tabs" aria-label="Workspace">
-    <button class="mode-tab active" data-mode="design">Design</button>
-    <button class="mode-tab" data-mode="slice">Slice</button>
-    <button class="mode-tab" data-mode="preview">Preview</button>
-  </nav>
-
-  <div class="app-shell">
-    <aside class="left-panel panel">
-      <section class="panel-section" data-workspace="design">
-        <h2>Create</h2>
-        <div class="tool-grid">
-          <button data-add="box">Box</button>
-          <button data-add="cylinder">Cylinder</button>
-          <button data-add="sphere">Sphere</button>
-          <button data-add="cone">Cone</button>
-          <button data-add="torus">Torus</button>
-          <button data-add="tube">Tube</button>
-        </div>
-        <div class="button-stack">
-          <label class="primary file-btn">Import STL<input id="stlInput" type="file" accept=".stl,model/stl"></label>
-          <button id="exportStlBtn" class="secondary">Export Selected / Scene STL</button>
-        </div>
-      </section>
-
-      <section class="panel-section" data-workspace="design">
-        <h2>Scene</h2>
-        <div class="scene-toolbar">
-          <button id="selectAllBtn" class="tiny">All</button>
-          <button id="clearSelectionBtn" class="tiny">None</button>
-        </div>
-        <div id="sceneList" class="scene-list"></div>
-      </section>
-
-      <section class="panel-section" data-workspace="design">
-        <h2>Boolean</h2>
-        <p class="hint">Check exactly two objects. The first checked object is A, the second is B.</p>
-        <div class="tool-grid three">
-          <button id="unionBtn">Union</button>
-          <button id="subtractBtn">A − B</button>
-          <button id="intersectBtn">Intersect</button>
-        </div>
-      </section>
-
-      <section class="panel-section" data-workspace="slice" hidden>
-        <h2>Printer</h2>
-        <label>Profile<select id="printerProfile"></select></label>
-        <div class="triplet">
-          <label>X<input id="bedX" type="number" min="1" step="1"></label>
-          <label>Y<input id="bedY" type="number" min="1" step="1"></label>
-          <label>Z<input id="bedZ" type="number" min="1" step="1"></label>
-        </div>
-        <label>Nozzle<input id="nozzleSize" type="number" min="0.1" max="2" step="0.05"></label>
-      </section>
-
-      <section class="panel-section" data-workspace="slice" hidden>
-        <h2>Material</h2>
-        <label>Filament<select id="materialProfile"></select></label>
-        <label>Nozzle °C<input id="nozzleTemp" type="number" min="0" max="400"></label>
-        <label>Bed °C<input id="bedTemp" type="number" min="0" max="150"></label>
-        <label>Fan %<input id="fanSpeed" type="number" min="0" max="100"></label>
-      </section>
-
-      <section class="panel-section" data-workspace="slice" hidden>
-        <h2>Quality</h2>
-        <label>Preset<select id="qualityPreset"></select></label>
-        <label>Layer height (mm)<input id="layerHeight" type="number" min="0.04" max="1" step="0.01"></label>
-        <label>Wall loops<input id="wallCount" type="number" min="1" max="12" step="1"></label>
-        <label>Top layers<input id="topLayers" type="number" min="0" max="30" step="1"></label>
-        <label>Bottom layers<input id="bottomLayers" type="number" min="0" max="30" step="1"></label>
-      </section>
-
-      <section class="panel-section" data-workspace="slice" hidden>
-        <h2>Strength & Supports</h2>
-        <label>Infill %<input id="infillDensity" type="number" min="0" max="100" step="1"></label>
-        <label>Infill pattern<select id="infillPattern">
-          <option value="grid">Grid</option>
-          <option value="gyroid">Gyroid</option>
-          <option value="honeycomb">Honeycomb</option>
-          <option value="lines">Lines</option>
-        </select></label>
-        <label class="check-row"><input id="supportsEnabled" type="checkbox"> Generate supports</label>
-        <label>Support angle<input id="supportAngle" type="number" min="0" max="89" step="1"></label>
-        <label class="check-row"><input id="brimEnabled" type="checkbox"> Brim</label>
-      </section>
-    </aside>
-
-    <main class="viewport-wrap">
-      <div id="viewportToolbar" class="viewport-toolbar">
-        <div class="toolbar-group">
-          <button id="moveTool" class="active">Move</button>
-          <button id="rotateTool">Rotate</button>
-          <button id="scaleTool">Scale</button>
-        </div>
-        <div class="toolbar-group">
-          <button data-view="iso">Iso</button>
-          <button data-view="top">Top</button>
-          <button data-view="front">Front</button>
-          <button data-view="right">Right</button>
-        </div>
-        <div class="toolbar-group">
-          <button id="fitViewBtn">Fit</button>
-          <button id="toggleWireBtn">Wire</button>
-        </div>
-      </div>
-      <div id="viewport"></div>
-      <div id="previewControls" class="preview-controls" hidden>
-        <label>Layer <input id="layerSlider" type="range" min="0" max="0" value="0"></label>
-        <span id="layerLabel">No sliced layers</span>
-      </div>
-      <div class="statusbar">
-        <span id="statusText">Ready.</span>
-        <span id="selectionInfo">No selection</span>
-      </div>
-    </main>
-
-    <aside class="right-panel panel">
-      <section class="panel-section" data-workspace="design">
-        <div class="section-title-row"><h2>Properties</h2><button id="renameBtn" class="tiny">Rename</button></div>
-        <div id="noSelectionMessage" class="empty-state">Select an object to edit it.</div>
-        <div id="propertiesForm" hidden>
-          <label>Name<input id="objectName" type="text" maxlength="80"></label>
-          <h3>Position (mm)</h3>
-          <div class="triplet">
-            <label>X<input id="posX" type="number" step="0.1"></label>
-            <label>Y<input id="posY" type="number" step="0.1"></label>
-            <label>Z<input id="posZ" type="number" step="0.1"></label>
-          </div>
-          <h3>Rotation (°)</h3>
-          <div class="triplet">
-            <label>X<input id="rotX" type="number" step="1"></label>
-            <label>Y<input id="rotY" type="number" step="1"></label>
-            <label>Z<input id="rotZ" type="number" step="1"></label>
-          </div>
-          <h3>Scale</h3>
-          <div class="triplet">
-            <label>X<input id="scaleX" type="number" step="0.01"></label>
-            <label>Y<input id="scaleY" type="number" step="0.01"></label>
-            <label>Z<input id="scaleZ" type="number" step="0.01"></label>
-          </div>
-          <div id="primitiveParams"></div>
-          <h3>Measured size</h3>
-          <div id="measurements" class="measure-box"></div>
-          <div class="button-stack">
-            <button id="placeOnBedBtn">Place on Bed</button>
-            <button id="centerBedBtn">Center on Bed</button>
-            <button id="duplicateBtn">Duplicate</button>
-            <button id="deleteBtn" class="danger">Delete</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel-section" data-workspace="slice" hidden>
-        <div class="section-title-row">
-          <h2>Print Settings</h2>
-          <select id="settingsMode" class="mini-select"><option value="simple">Simple</option><option value="advanced">Advanced</option></select>
-        </div>
-        <label>Print speed (mm/s)<input id="printSpeed" type="number" min="1" max="1000"></label>
-        <label>Travel speed (mm/s)<input id="travelSpeed" type="number" min="1" max="1500"></label>
-        <label>Retraction (mm)<input id="retractionDistance" type="number" min="0" max="20" step="0.1"></label>
-        <label class="advanced-setting">Outer wall speed<input id="outerWallSpeed" type="number" min="1" max="1000"></label>
-        <label class="advanced-setting">Acceleration<input id="acceleration" type="number" min="100" max="100000" step="100"></label>
-        <label class="advanced-setting">Line width<input id="lineWidth" type="number" min="0.1" max="2" step="0.01"></label>
-        <label class="advanced-setting check-row"><input id="ironingEnabled" type="checkbox"> Iron top surfaces</label>
-        <label class="advanced-setting check-row"><input id="vaseMode" type="checkbox"> Spiral vase mode</label>
-        <button id="sliceBtn" class="primary big">Slice Model</button>
-        <progress id="sliceProgress" max="100" value="0"></progress>
-        <div id="sliceSummary" class="summary-card">Not sliced yet.</div>
-        <button id="downloadGcodeBtn" class="secondary" disabled>Download G-code</button>
-      </section>
-
-      <section class="panel-section" data-workspace="preview" hidden>
-        <h2>Toolpath Preview</h2>
-        <div id="gcodeStats" class="summary-card">Slice a model first.</div>
-        <div class="legend">
-          <span><i class="legend-line travel"></i>Travel</span>
-          <span><i class="legend-line print"></i>Extrusion</span>
-        </div>
-        <button id="backToSliceBtn" class="secondary">Back to Slice Settings</button>
-      </section>
-    </aside>
+<header class="topbar">
+  <div class="brand-wrap">
+    <div class="brand">Render <span>Studio</span></div>
+    <div class="version">v0.2.0</div>
   </div>
+  <div class="top-actions">
+    <button id="undoBtn" class="icon-btn" title="Undo (Ctrl+Z)">↶</button>
+    <button id="redoBtn" class="icon-btn" title="Redo (Ctrl+Shift+Z)">↷</button>
+    <button id="aboutBtn" class="secondary">About</button>
+    <button id="saveProjectBtn" class="secondary">Save Project</button>
+    <label class="secondary file-btn">Open Project<input id="openProjectInput" type="file" accept="application/json,.json"></label>
+  </div>
+</header>
 
-  <dialog id="aboutDialog">
-    <div class="dialog-head"><h2>RenderSlicer Studio</h2><button id="closeAboutBtn">✕</button></div>
-    <p>A local-first 3D design and FDM slicing workspace.</p>
-    <p>Models stay on your device. Slicing is performed in the browser through a local slicing engine when available.</p>
-  </dialog>
+<div class="app-shell">
+  <aside class="left-panel panel">
+    <section class="panel-section">
+      <h2>Create 3D</h2>
+      <div class="tool-grid">
+        <button data-add="box">Box</button><button data-add="cylinder">Cylinder</button>
+        <button data-add="sphere">Sphere</button><button data-add="cone">Cone</button>
+        <button data-add="torus">Torus</button><button data-add="tube">Tube</button>
+      </div>
+    </section>
 
-  <script type="module" src="./bootstrap.js"></script>
+    <section class="panel-section">
+      <h2>Sketch Profiles</h2>
+      <p class="hint">Profiles are flat shapes you can Push/Pull into solids or sweep along a path.</p>
+      <div class="tool-grid">
+        <button data-profile="rectangle">Rectangle</button>
+        <button data-profile="circle">Circle</button>
+      </div>
+      <label>Push/Pull distance (mm)<input id="pushPullDistance" type="number" value="25" step="0.1"></label>
+      <button id="pushPullBtn" class="primary full">Push / Pull Selected Profile</button>
+      <label>Offset distance (mm)<input id="offsetDistance" type="number" value="2" step="0.1"></label>
+      <button id="offsetBtn" class="secondary full">Offset Selected Profile</button>
+    </section>
+
+    <section class="panel-section">
+      <h2>Paths & Follow Me</h2>
+      <div class="tool-grid three">
+        <button data-path="line">Line Path</button>
+        <button data-path="arc">Arc Path</button>
+        <button data-path="circle">Circle Path</button>
+      </div>
+      <p class="hint">Check one profile and one path in Scene, then use Follow Me.</p>
+      <button id="followMeBtn" class="primary full" disabled>Follow Me</button>
+    </section>
+
+    <section class="panel-section">
+      <h2>Solid Tools</h2>
+      <p class="hint">Check exactly two solid meshes. First checked = A, second = B.</p>
+      <div class="tool-grid three">
+        <button id="unionBtn" disabled>Union</button>
+        <button id="subtractBtn" disabled>A − B</button>
+        <button id="intersectBtn" disabled>Intersect</button>
+      </div>
+    </section>
+
+    <section class="panel-section">
+      <h2>Files</h2>
+      <div class="button-stack">
+        <label class="primary file-btn">Import STL<input id="stlInput" type="file" accept=".stl,model/stl"></label>
+        <button id="exportStlBtn" class="secondary">Export Selected / Scene STL</button>
+      </div>
+    </section>
+
+    <section class="panel-section grow-section">
+      <div class="section-title-row"><h2>Scene</h2><div><button id="selectAllBtn" class="tiny">All</button><button id="clearSelectionBtn" class="tiny">None</button></div></div>
+      <div id="sceneList" class="scene-list"></div>
+    </section>
+  </aside>
+
+  <main class="viewport-wrap">
+    <div class="viewport-toolbar">
+      <div class="toolbar-group">
+        <button id="selectTool" class="active">Select</button>
+        <button id="moveTool">Move</button><button id="rotateTool">Rotate</button><button id="scaleTool">Scale</button>
+        <button id="measureTool">Measure</button>
+      </div>
+      <div class="toolbar-group compact-group">
+        <label class="snap-toggle"><input id="snapEnabled" type="checkbox" checked> Snap</label>
+        <input id="snapStep" class="toolbar-number" type="number" min="0.1" value="1" step="0.1" title="Move snap in mm">
+      </div>
+      <div class="toolbar-group">
+        <button data-view="iso">Iso</button><button data-view="top">Top</button><button data-view="front">Front</button><button data-view="right">Right</button>
+      </div>
+      <div class="toolbar-group">
+        <button id="fitViewBtn">Fit</button><button id="toggleWireBtn">Wire</button><button id="clearGuidesBtn">Clear Guides</button>
+      </div>
+    </div>
+    <div id="viewport"></div>
+    <div id="measureReadout" class="measure-readout hidden"></div>
+    <div class="statusbar"><span id="statusText">Ready.</span><span id="selectionInfo">No selection</span></div>
+  </main>
+
+  <aside class="right-panel panel">
+    <section class="panel-section">
+      <div class="section-title-row"><h2>Properties</h2><button id="renameBtn" class="tiny">Rename</button></div>
+      <div id="noSelectionMessage" class="empty-state">Select an object to edit it.</div>
+      <div id="propertiesForm" hidden>
+        <label>Name<input id="objectName" type="text" maxlength="80"></label>
+        <div id="objectType" class="object-type"></div>
+        <label class="check-row"><input id="objectLocked" type="checkbox"> Lock object</label>
+
+        <h3>Position (mm)</h3>
+        <div class="triplet"><label>X<input id="posX" type="number" step="0.1"></label><label>Y<input id="posY" type="number" step="0.1"></label><label>Z<input id="posZ" type="number" step="0.1"></label></div>
+        <h3>Rotation (°)</h3>
+        <div class="triplet"><label>X<input id="rotX" type="number" step="1"></label><label>Y<input id="rotY" type="number" step="1"></label><label>Z<input id="rotZ" type="number" step="1"></label></div>
+        <h3>Scale</h3>
+        <div class="triplet"><label>X<input id="scaleX" type="number" step="0.01"></label><label>Y<input id="scaleY" type="number" step="0.01"></label><label>Z<input id="scaleZ" type="number" step="0.01"></label></div>
+
+        <div id="parametricParams"></div>
+
+        <div id="appearancePanel">
+          <h3>Appearance</h3>
+          <label>Color<input id="objectColor" type="color" value="#5b8def"></label>
+          <label>Roughness<input id="roughness" type="range" min="0" max="1" step="0.01" value="0.58"></label>
+          <label>Metalness<input id="metalness" type="range" min="0" max="1" step="0.01" value="0.04"></label>
+          <label class="check-row"><input id="smoothShading" type="checkbox" checked> Smooth shading</label>
+        </div>
+
+        <h3>Measured size</h3><div id="measurements" class="measure-box"></div>
+        <div class="button-stack">
+          <button id="placeOnBedBtn">Place on Ground</button><button id="centerBedBtn">Center at Origin</button>
+          <button id="duplicateBtn">Duplicate</button><button id="deleteBtn" class="danger">Delete</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-section">
+      <h2>Precision & View</h2>
+      <label>Move snap (mm)<input id="snapStepSide" type="number" min="0.1" value="1" step="0.1"></label>
+      <label>Rotation snap (°)<input id="rotationSnap" type="number" min="1" value="15" step="1"></label>
+      <label>Grid spacing (mm)<input id="gridSpacing" type="number" min="1" value="10" step="1"></label>
+      <p class="hint">Measure mode: click two points on geometry or the ground. A temporary guide is kept until Clear Guides.</p>
+    </section>
+
+    <section class="panel-section">
+      <h2>Rendering</h2>
+      <label>Background<input id="backgroundColor" type="color" value="#0b1020"></label>
+      <label>Light intensity<input id="lightIntensity" type="range" min="0.2" max="5" value="2.2" step="0.1"></label>
+      <label class="check-row"><input id="shadowsEnabled" type="checkbox" checked> Shadows</label>
+      <label class="check-row"><input id="axesEnabled" type="checkbox" checked> Show axes</label>
+      <label class="check-row"><input id="gridEnabled" type="checkbox" checked> Show grid</label>
+    </section>
+  </aside>
+</div>
+
+<dialog id="aboutDialog"><div class="dialog-head"><h2>Render Studio v0.2.0</h2><button id="closeAboutBtn">✕</button></div><p>A browser-based 3D modeling workspace focused on direct, precise modeling.</p></dialog>
+<script type="module" src="./bootstrap.js"></script>
 </body>
 </html>
