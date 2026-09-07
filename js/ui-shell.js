@@ -7,6 +7,15 @@
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; } catch { saved = {}; }
 
+  const narrowScreen = () => window.matchMedia?.('(max-width:800px)').matches;
+  const updateDockOffsets = () => {
+    const left = $('dockLeft'); const right = $('dockRight'); const top = $('dockTop');
+    if (!left || !right || !top) return;
+    const visibleWidth = zone => [...zone.children].some(el => !el.classList.contains('toolbar-hidden')) ? zone.getBoundingClientRect().width : 0;
+    top.style.left = `${Math.ceil(visibleWidth(left))}px`;
+    top.style.right = `${Math.ceil(visibleWidth(right))}px`;
+  };
+
   const saveLayout = () => {
     const state = { toolbars: {}, trays: {} };
     document.querySelectorAll('.floating-toolbar').forEach(el => {
@@ -48,7 +57,7 @@
     const zone = dock === 'left' ? $('dockLeft') : dock === 'right' ? $('dockRight') : $('dockTop');
     el.dataset.dock = dock; el.dataset.floating = 'false'; el.style.left = ''; el.style.top = '';
     el.classList.toggle('vertical', dock === 'left' || dock === 'right');
-    el.classList.toggle('horizontal', dock === 'top'); zone.appendChild(el); saveLayout();
+    el.classList.toggle('horizontal', dock === 'top'); zone.appendChild(el); updateDockOffsets(); saveLayout();
   }
   function floatToolbar(el, x, y) {
     workspace.appendChild(el); el.dataset.floating = 'true'; el.dataset.dock = 'float';
@@ -89,7 +98,7 @@
   function finishTrayDrag(el,x,y){const r=workspace.getBoundingClientRect(),edge=78;if(x-r.left<edge)dockTray(el,'left');else if(r.right-x<edge)dockTray(el,'right');else{floatTray(el,x-140,y-14);saveLayout();}}
   document.querySelectorAll('.tool-tray').forEach(el => {
     const cfg=saved.trays?.[el.id];
-    if(cfg?.hidden)el.classList.add('tray-hidden');else if(cfg&&!cfg.hidden)el.classList.remove('tray-hidden');
+    if(cfg?.hidden)el.classList.add('tray-hidden');else if(cfg&&!cfg.hidden)el.classList.remove('tray-hidden');else if(!cfg&&narrowScreen())el.classList.add('tray-hidden');
     if(cfg?.collapsed)el.classList.add('collapsed');
     if(cfg?.floating){floatTray(el,workspace.getBoundingClientRect().left+(parseFloat(cfg.left)||120),workspace.getBoundingClientRect().top+(parseFloat(cfg.top)||80));el.style.left=cfg.left;el.style.top=cfg.top;}
     else dockTray(el,cfg?.dock&&cfg.dock!=='float'?cfg.dock:el.dataset.defaultTrayDock||'right');
@@ -106,9 +115,9 @@
     document.querySelectorAll('[data-toggle-toolbar]').forEach(c=>c.checked=!$(c.dataset.toggleToolbar)?.classList.contains('toolbar-hidden'));
     document.querySelectorAll('[data-toggle-tray]').forEach(c=>c.checked=!$(c.dataset.toggleTray)?.classList.contains('tray-hidden'));
   }
-  document.querySelectorAll('[data-toggle-toolbar]').forEach(c=>c.addEventListener('change',()=>{const el=$(c.dataset.toggleToolbar);if(!el)return;el.classList.toggle('toolbar-hidden',!c.checked);saveLayout();}));
+  document.querySelectorAll('[data-toggle-toolbar]').forEach(c=>c.addEventListener('change',()=>{const el=$(c.dataset.toggleToolbar);if(!el)return;el.classList.toggle('toolbar-hidden',!c.checked);updateDockOffsets();saveLayout();}));
   document.querySelectorAll('[data-toggle-tray]').forEach(c=>c.addEventListener('change',()=>{const el=$(c.dataset.toggleTray);if(!el)return;el.classList.toggle('tray-hidden',!c.checked);saveLayout();}));
-  syncChecks();
+  syncChecks(); updateDockOffsets();
 
-  window.addEventListener('resize',()=>{document.querySelectorAll('[data-floating="true"]').forEach(el=>{const r=workspace.getBoundingClientRect(),er=el.getBoundingClientRect();const left=Math.max(2,Math.min(r.width-er.width-2,parseFloat(el.style.left)||2));const top=Math.max(2,Math.min(r.height-er.height-2,parseFloat(el.style.top)||2));el.style.left=`${left}px`;el.style.top=`${top}px`;});});
+  window.addEventListener('resize',()=>{updateDockOffsets();document.querySelectorAll('[data-floating="true"]').forEach(el=>{const r=workspace.getBoundingClientRect(),er=el.getBoundingClientRect();const left=Math.max(2,Math.min(r.width-er.width-2,parseFloat(el.style.left)||2));const top=Math.max(2,Math.min(r.height-er.height-2,parseFloat(el.style.top)||2));el.style.left=`${left}px`;el.style.top=`${top}px`;});});
 })();
