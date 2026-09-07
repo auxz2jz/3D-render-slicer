@@ -28,7 +28,7 @@ renderer.localClippingEnabled = true;
 viewport.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#0b1020');
+scene.background = new THREE.Color('#d7e7f4');
 const perspectiveCamera = new THREE.PerspectiveCamera(45,1,0.1,20000);
 perspectiveCamera.up.set(0,0,1); perspectiveCamera.position.set(220,-220,170);
 const orthoCamera = new THREE.OrthographicCamera(-150,150,150,-150,-20000,20000);
