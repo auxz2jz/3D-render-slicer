@@ -29,7 +29,7 @@ async function loadClassic(src) {
 }
 
 try {
-  for (const src of ['./js/part01.js','./js/part02.js','./js/part03.js','./js/part04.js','./js/part05.js','./js/part06.js','./js/part07a.js','./js/part07b.js','./js/part08.js','./js/part09.js','./js/part10.js','./js/part11.js','./js/part12.js','./js/part13.js','./js/ui-shell.js']) {
+  for (const src of ['./js/part01.js','./js/part02.js','./js/part03.js','./js/part04.js','./js/part05.js','./js/part06.js','./js/part07a.js','./js/part07b.js','./js/part08.js','./js/part09.js','./js/part10.js','./js/part11.js','./js/part12.js','./js/part13.js','./js/part14.js','./js/ui-shell.js']) {
     await loadClassic(src);
   }
 } catch (error) {
