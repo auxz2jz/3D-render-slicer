@@ -1,124 +1,165 @@
-# RenderSlicer Studio
+# Render Studio
 
-**Version 0.1.0** — first working prototype for the `3D render slicer` repository.
+**Version 0.2.0** — focused 3D modeling edition.
 
-RenderSlicer Studio is intended to combine the parts of CAD/modeling software that are genuinely useful for making printable parts with a slicer workflow that does not force users to bounce between unrelated programs.
+The slicer workspace from the earlier prototype has been intentionally removed. The current goal is to make a practical browser-based 3D modeling tool with fast direct manipulation like SketchUp, exact dimensions like CAD software, and a clean workflow that does not bury basic tools under advanced settings.
 
-## Product philosophy
+## Design philosophy
 
-The goal is not to copy every menu from Blender, FreeCAD, Fusion, Cura, PrusaSlicer, and OrcaSlicer. The goal is to keep the features people actually need for 3D printing, organize them around the job being done, and hide advanced controls until they are useful.
+The UI is organized around what a person is trying to do:
 
-The main workflow is:
+- create a shape,
+- change it directly,
+- enter an exact measurement when precision matters,
+- combine shapes,
+- measure/check the result,
+- save or export it.
 
-1. **Design** — create or import the part.
-2. **Slice** — choose printer, material, quality, strength, supports, and speeds.
-3. **Preview** — inspect the generated toolpath by layer before downloading G-code.
+The app avoids a separate "simple" and "expert" world wherever possible. Exact values are available beside direct tools instead.
 
 ## Research influences
 
-### Modeling / CAD
+### SketchUp
 
-- **FreeCAD** — real-world units, parametric objects, constrained/precise modeling, model history, solids and booleans.
-- **Fusion** — user parameters, feature parameters, sketch-to-solid workflows, extrude/revolve/sweep/loft, patterns, fillets/chamfers.
-- **Blender** — non-destructive thinking, fast transforms, modifier-style workflow, mirror/array/boolean concepts, strong viewport navigation.
-- **OpenSCAD** — simple primitives + constructive solid geometry and configurable dimensions.
+Render Studio borrows the workflow ideas behind:
 
-### Slicing
+- **Push/Pull** — turn a flat face/profile into a 3D volume with an exact distance.
+- **Follow Me** — sweep a profile along a path for trim, tubing, curved parts, bowls, and similar geometry.
+- **Offset** — create an evenly larger or smaller version of a profile.
+- **Tape Measure / Guides** — measurement helpers should aid modeling without becoming normal model geometry.
+- **Inferencing / snapping** — easy alignment to useful increments and references.
+- **Groups / Components philosophy** — reusable/nested organization is a planned next-stage feature.
 
-- **PrusaSlicer** — multiple beds/projects, precise per-print controls, variable layer height, organic/support painting concepts, advanced G-code preview.
-- **OrcaSlicer** — calibration-first workflow, pressure advance/flow/temp/retraction tuning, modern printer coverage, granular process controls.
-- **UltiMaker Cura** — simple recommended mode plus deep custom mode, printer/material profiles, broad slicing settings.
-- **Kiri:Moto** — local browser slicing, a clear Arrange → Slice → Preview → Export concept, JavaScript slicing API.
+### FreeCAD / Fusion-style CAD
 
-## What v0.1.0 already does
+- real-world millimeter dimensions,
+- parametric primitive/profile/path dimensions,
+- exact transforms,
+- Booleans,
+- model history/undo,
+- future constrained sketches and feature history.
 
-### Design workspace
+### Blender
 
-- Add parametric Box, Cylinder, Sphere, Cone, Torus, and Tube primitives.
-- Edit primitive dimensions numerically in millimeters.
-- Move, rotate, and scale with a 3D transform gizmo or exact numeric inputs.
-- Rename, duplicate, hide, delete, place on bed, and center objects.
-- Front, right, top, and isometric camera views.
-- Fit camera and wireframe toggle.
-- Scene/object list.
-- Object bounding-box measurements.
-- Import binary or ASCII STL.
-- Export selected object or the visible scene to STL.
-- Boolean Union, Subtract, and Intersect for two checked solid meshes (browser CSG module; best with watertight meshes).
-- Undo/redo history.
-- Save/load RenderSlicer project files as JSON.
+- quick viewport navigation,
+- transform gizmos,
+- object outliner,
+- material controls,
+- non-destructive/modifier-style thinking for future tools,
+- snapping and duplication shortcuts.
 
-### Slice workspace
+## What v0.2.0 does now
 
-- Printer profiles including a Creality K1C-sized 220 × 220 × 250 mm profile and a fully editable custom profile.
-- Editable bed X/Y/Z and nozzle diameter.
-- PLA, PETG, ABS/ASA, TPU, and Custom material starting profiles.
-- Draft, Standard, Fine, Strong Functional, and Custom quality presets.
-- Layer height, wall loops, top/bottom layers.
-- Infill amount and pattern.
-- Support generation and overhang angle.
-- Brim.
-- Nozzle temperature, bed temperature, cooling fan.
-- Print/travel speed and retraction.
-- Simple/Advanced settings mode.
-- Advanced outer-wall speed, acceleration, line width, ironing and vase controls are represented in the UI; the Kiri adapter will be expanded as engine mappings are verified.
-- Browser slicing adapter based on the documented Kiri:Moto JavaScript engine API.
-- Download generated G-code.
+### Direct 3D creation
 
-### Preview workspace
+- Box
+- Cylinder
+- Sphere
+- Cone
+- Torus
+- Hollow Tube
+- exact parametric dimensions for generated objects
 
-- Parses generated G-code locally.
-- Separates extrusion moves from travel moves.
-- Groups toolpaths by Z/layer.
-- Layer slider to inspect the toolpath progressively.
-- Basic G-code line/layer/file-size summary.
+### Sketch-style profiles
 
-## Important v0.1 limitations
+- Rectangle Profile
+- Circle Profile
+- exact width/depth/radius
+- **Push/Pull** a selected profile by an exact distance to create a solid
+- **Offset** a selected profile by an exact distance
+- source profiles are kept as hidden construction geometry after Push/Pull so they can be recovered from the Scene list
 
-This is a first prototype, not yet a production slicer for unattended printing.
+### Paths and Follow Me
 
-- The browser slicer currently loads Kiri:Moto's live engine module from Grid.Space. The intended next revision should vendor/pin a tested engine build so slicing is reproducible and can work offline.
-- G-code must be visually checked in Preview before printing, especially until printer-specific start/end G-code profiles are tested on the real printer.
-- The modeling kernel is mesh-based in v0.1. Robust STEP/BRep CAD, sketch constraints, fillet/chamfer, shell, revolve, sweep, loft, mirror and array history are planned for the next modeling phase.
-- Boolean operations rely on a browser mesh CSG library and work best on watertight/manifold objects.
-- Material temperature presets are starting points, not guarantees for every filament brand.
+- Line Path
+- Arc Path
+- Circle Path
+- editable path length/radius/angle
+- check one profile and one path, then use **Follow Me** to sweep the profile along the path
 
-## Planned architecture
+### Solid operations
 
-The project should stay modular rather than becoming one huge HTML file:
+- Union
+- Subtract A − B
+- Intersect
 
-- `index.html` — interface shell
-- `styles.css` — responsive UI
-- `app.js` — viewport, objects, CAD tools, project state, slicing adapter, preview
-- later `model/` — parametric/solid modeling subsystem
-- later `slicer/` — pinned local slicing engine + profiles
-- later `profiles/` — printer/material/process definitions
-- later `tests/` — geometry and G-code regression tests
+These browser CSG operations work best with closed/watertight solids.
 
-For the more advanced CAD phase, OpenCascade.js is a strong candidate because it provides a real solid/BRep geometry kernel in WebAssembly. For the slicer, a pinned Kiri:Moto engine is the simplest permissively licensed browser route; a CuraEngine/WASM adapter can be evaluated as a second backend.
+### Precision and inspection
 
-## High-priority next features
+- Move / Rotate / Scale transform gizmos
+- exact numeric position, rotation, and scale
+- translation snapping
+- configurable movement snap size
+- configurable rotation snap angle
+- configurable grid spacing
+- Measure tool: click two model/ground points to get a distance
+- measurement guide segments are kept separately from model geometry
+- clear all measurement guides at once
+- measured object bounding size
+- Place on Ground
+- Center at Origin
 
-1. **Sketch mode** — rectangle, circle, line, arc, dimensions, horizontal/vertical/coincident constraints.
-2. **Sketch → solid** — Extrude/Cut and Revolve first; Sweep and Loft after those are stable.
-3. **Solid tools** — fillet, chamfer, shell/hollow, hole tool.
-4. **Patterns** — mirror, rectangular array, circular array.
-5. **Model history** — editable operation tree instead of only undo/redo snapshots.
-6. **Printability inspection** — non-manifold check, thin-wall warnings, out-of-bed warning, minimum wall thickness, overhang visualization.
-7. **Auto orientation** — suggest flat/stable faces and estimate support cost.
-8. **Arrange** — automatically place multiple parts on one or more plates.
-9. **Support painting** — paint support/blocker regions directly on the model.
-10. **Variable layer height** — automatic and manual layer-height painting.
-11. **Seam painting** — choose or hide Z-seam regions.
-12. **Calibration** — temperature tower, flow ratio, pressure advance/linear advance, retraction, max-flow tests.
-13. **Printer profile manager** — import/export profiles and separate printer/nozzle/material/process settings.
-14. **3MF projects** — retain multiple parts, transforms, profiles, colors/material assignments and plate data.
-15. **Safer G-code validation** — bed-bound checks, max-Z checks, extrusion sanity checks, start/end macro verification.
+### Scene organization
 
-## Third-party components used by the prototype
+- named object list
+- show/hide individual objects
+- lock/unlock individual objects
+- select objects for two-object operations without changing the main active object
+- rename
+- duplicate
+- delete
+- undo/redo
 
-- Three.js — 3D rendering, STL loading/export, viewport controls.
-- three-bvh-csg — optional mesh boolean operations loaded dynamically.
-- Kiri:Moto / Grid.Space engine API — browser FDM slicing/G-code generation adapter.
+### Appearance and rendering
 
-Their respective upstream licenses and notices should be retained when vendoring dependencies into the repository.
+- per-object color
+- roughness and metalness for solid materials
+- smooth/flat shading toggle
+- background color
+- light intensity
+- shadows on/off
+- axes on/off
+- grid on/off
+- wireframe display
+- isometric, top, front, and right views
+- fit view
+
+### Files
+
+- Import STL
+- Export selected solid or visible solid scene to STL
+- Save Render Studio project JSON
+- Reopen Render Studio project JSON
+
+STL orientation is converted between Three.js' Y-up viewport convention and STL's common Z-up convention by `axis-adapter.js`.
+
+## Current limitations / next important features
+
+The current Push/Pull works on Render Studio sketch profiles. A later face-editing engine should allow clicking a face directly on any compatible solid, like SketchUp.
+
+High-priority next additions:
+
+1. line / polyline / arc drawing directly in the viewport
+2. automatic face creation from closed sketches
+3. direct face Push/Pull on existing solids
+4. endpoint, midpoint, face, axis, parallel, and perpendicular inferencing
+5. true guide lines and guide points
+6. groups and linked Components/instances
+7. mirror and rectangular/circular arrays
+8. constrained sketch mode with dimensions
+9. fillet, chamfer, shell/hollow, and hole tools
+10. editable modeling-history tree
+11. STEP/BRep solid kernel for more reliable engineering geometry
+12. OBJ/GLTF/STEP import/export as the geometry kernel grows
+
+A WebAssembly OpenCascade kernel remains a strong candidate for the later BRep/STEP phase. The current mesh-based core is appropriate for fast browser prototyping and STL-oriented work, but a true solid kernel will be better for advanced mechanical CAD.
+
+## Project files
+
+- `index.html` — application interface
+- `styles.css` — responsive layout and visual styling
+- `app.js` — scene, modeling tools, measurements, project data, import/export
+- `axis-adapter.js` — STL Z-up ↔ viewport Y-up conversion
+- `bootstrap.js` — loads the axis adapter before the main application
+- `THIRD_PARTY.md` — third-party library notes
