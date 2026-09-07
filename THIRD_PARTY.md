@@ -1,9 +1,8 @@
 # Third-party components
 
-RenderSlicer Studio v0.1.0 references the following upstream projects at runtime.
+Render Studio v0.2.0 currently uses these browser libraries:
 
-- **Three.js** — https://threejs.org/ — MIT License.
-- **three-bvh-csg** — https://github.com/gkjohnson/three-bvh-csg — MIT License. The project describes the library as experimental and notes manifold/watertight mesh requirements for reliable CSG.
-- **Kiri:Moto / Grid.Space** — https://github.com/GridSpace/grid-apps — MIT License. The prototype uses the documented JavaScript slicing-engine interface. A future repository revision should vendor a tested pinned version and retain its license notice.
+- **Three.js** — WebGL rendering, camera/transform controls, STL import/export, geometry helpers.
+- **three-bvh-csg** — loaded on demand for Boolean Union, Subtract, and Intersect operations.
 
-This file is informational; when dependencies are vendored, include the exact upstream license files distributed with those versions.
+The application source in this repository does not include the source code of those libraries; they are loaded from public module/CDN endpoints at runtime.
