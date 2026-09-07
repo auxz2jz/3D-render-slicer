@@ -1,165 +1,161 @@
-# Render Studio
+# Render Studio CAD
 
-**Version 0.2.0** — focused 3D modeling edition.
+**Version 1.0.0** — SketchUp-style CAD/modeling workspace.
 
-The slicer workspace from the earlier prototype has been intentionally removed. The current goal is to make a practical browser-based 3D modeling tool with fast direct manipulation like SketchUp, exact dimensions like CAD software, and a clean workflow that does not bury basic tools under advanced settings.
+Render Studio CAD is a browser-based 3D modeling application designed around two goals:
 
-## Design philosophy
+1. **SketchUp-like interaction** — choose a tool, then work directly in the 3D viewport.
+2. **Fusion-style precision** — exact dimensions, parametric features, solid operations, construction geometry, inspection, and feature history.
 
-The UI is organized around what a person is trying to do:
+The slicer has been removed from this project. This repository is focused on 3D modeling/CAD.
 
-- create a shape,
-- change it directly,
-- enter an exact measurement when precision matters,
-- combine shapes,
-- measure/check the result,
-- save or export it.
+## Interface
 
-The app avoids a separate "simple" and "expert" world wherever possible. Exact values are available beside direct tools instead.
+The v1 interface intentionally replaces the older permanent left/right button panels.
 
-## Research influences
+- Classic top menus: **File, Edit, View, Camera, Draw, Tools, Window, Help**.
+- A docked **Getting Started** icon toolbar across the top.
+- A docked **Large Tool Set** down the left.
+- Optional **Camera, Solid Tools, and Shapes** toolbars.
+- Toolbars can be dragged, floated, and docked to the top, left, or right edge.
+- Toolbars can be shown or hidden from **View**.
+- **Entity Info, Outliner, Model Info, Tool Settings, Tags, Scenes, Styles & Lighting, Inspector, and Feature History** are trays opened from **Window**.
+- Trays can dock left/right, float, collapse, or close.
+- Toolbar/tray layout is remembered locally in the browser.
+- A Measurements field stays available at the bottom for exact typed values.
 
-### SketchUp
+## Primary tools
 
-Render Studio borrows the workflow ideas behind:
+### Selection and navigation
 
-- **Push/Pull** — turn a flat face/profile into a 3D volume with an exact distance.
-- **Follow Me** — sweep a profile along a path for trim, tubing, curved parts, bowls, and similar geometry.
-- **Offset** — create an evenly larger or smaller version of a profile.
-- **Tape Measure / Guides** — measurement helpers should aid modeling without becoming normal model geometry.
-- **Inferencing / snapping** — easy alignment to useful increments and references.
-- **Groups / Components philosophy** — reusable/nested organization is a planned next-stage feature.
+- Select
+- Box Select
+- Move
+- Rotate
+- Scale
+- Orbit
+- Pan
+- Zoom
+- Zoom Extents
+- Isometric / Top / Front / Right views
+- Perspective / Orthographic projection
 
-### FreeCAD / Fusion-style CAD
+Middle mouse can temporarily orbit, right mouse pans, and the wheel zooms even while another modeling tool is active.
 
-- real-world millimeter dimensions,
-- parametric primitive/profile/path dimensions,
-- exact transforms,
-- Booleans,
-- model history/undo,
-- future constrained sketches and feature history.
+### Sketching
 
-### Blender
+- Line / Pencil
+- Freehand
+- Rectangle
+- Rotated Rectangle
+- Circle
+- Polygon
+- 2-Point Arc
+- 3-Point Arc
+- Pie
+- Offset
+- Trim
+- Extend
+- Mirror Sketch
+- XY / XZ / YZ sketch planes
+- Exact typed dimensions
+- Grid and vertex snapping
 
-- quick viewport navigation,
-- transform gizmos,
-- object outliner,
-- material controls,
-- non-destructive/modifier-style thinking for future tools,
-- snapping and duplication shortcuts.
+Initial constraint support includes horizontal, vertical, coincident, parallel, perpendicular, equal, midpoint, concentric, and fixed geometry behavior.
 
-## What v0.2.0 does now
+### Solid modeling
 
-### Direct 3D creation
-
-- Box
-- Cylinder
-- Sphere
-- Cone
-- Torus
-- Hollow Tube
-- exact parametric dimensions for generated objects
-
-### Sketch-style profiles
-
-- Rectangle Profile
-- Circle Profile
-- exact width/depth/radius
-- **Push/Pull** a selected profile by an exact distance to create a solid
-- **Offset** a selected profile by an exact distance
-- source profiles are kept as hidden construction geometry after Push/Pull so they can be recovered from the Scene list
-
-### Paths and Follow Me
-
-- Line Path
-- Arc Path
-- Circle Path
-- editable path length/radius/angle
-- check one profile and one path, then use **Follow Me** to sweep the profile along the path
-
-### Solid operations
-
+- Push / Pull
+- Extrude
+- Revolve
+- Sweep / Follow Me
+- Loft
+- Rib / Web
+- Hole
+- Thread / Helix
+- Fillet
+- Chamfer
+- Shell
+- Draft / Taper
+- Offset Face
+- Split Body
 - Union
-- Subtract A − B
+- Subtract
 - Intersect
+- Rectangular Pattern
+- Circular Pattern
+- Path Pattern
+- Mirror
+- Align
 
-These browser CSG operations work best with closed/watertight solids.
+Some advanced solid operations currently use mesh-based geometry and are not yet equivalent to a full engineering B-Rep kernel. A B-Rep/WebAssembly backend is the intended path for fully robust STEP solids, arbitrary-edge fillets/chamfers, shells, and exact Boolean behavior.
 
-### Precision and inspection
+### Construction and inspection
 
-- Move / Rotate / Scale transform gizmos
-- exact numeric position, rotation, and scale
-- translation snapping
-- configurable movement snap size
-- configurable rotation snap angle
-- configurable grid spacing
-- Measure tool: click two model/ground points to get a distance
-- measurement guide segments are kept separately from model geometry
-- clear all measurement guides at once
-- measured object bounding size
-- Place on Ground
-- Center at Origin
+- Tape Measure / Guides
+- Protractor
+- Offset / angled / mid construction planes
+- Construction axes and points
+- Section planes
+- Mass properties
+- Interference check
+- Mesh/watertightness checks
+- Basic mesh repair
 
-### Scene organization
+### Organization and appearance
 
-- named object list
-- show/hide individual objects
-- lock/unlock individual objects
-- select objects for two-object operations without changing the main active object
-- rename
-- duplicate
-- delete
-- undo/redo
-
-### Appearance and rendering
-
-- per-object color
-- roughness and metalness for solid materials
-- smooth/flat shading toggle
-- background color
-- light intensity
-- shadows on/off
-- axes on/off
-- grid on/off
-- wireframe display
-- isometric, top, front, and right views
-- fit view
+- Groups / Ungroup
+- Components and instances
+- Tags
+- Lock / Hide
+- Saved Scenes
+- Outliner
+- Entity Info
+- Materials
+- Shaded, Edges, Wireframe, X-Ray, and Monochrome display styles
+- Point and spot lights
+- Feature history
+- Undo / Redo
 
 ### Files
 
+- Save/open Render Studio project JSON
 - Import STL
-- Export selected solid or visible solid scene to STL
-- Save Render Studio project JSON
-- Reopen Render Studio project JSON
+- Export STL
+- Export OBJ
 
-STL orientation is converted between Three.js' Y-up viewport convention and STL's common Z-up convention by `axis-adapter.js`.
+## Keyboard shortcuts
 
-## Current limitations / next important features
+- **Space** — Select
+- **M** — Move
+- **Q** — Rotate
+- **S** — Scale
+- **L** — Line / Pencil
+- **R** — Rectangle
+- **C** — Circle
+- **P** — Push / Pull
+- **F** — Offset
+- **T** — Tape Measure / Guide
+- **O** — Orbit
+- **H** — Pan
+- **Z** — Zoom
+- **Delete** — Delete selection
+- **Ctrl+Z** — Undo
+- **Ctrl+Shift+Z** — Redo
+- **Shift+S** — Find a Tool
 
-The current Push/Pull works on Render Studio sketch profiles. A later face-editing engine should allow clicking a face directly on any compatible solid, like SketchUp.
+## Runtime architecture
 
-High-priority next additions:
+The user interface is HTML/CSS, while the interactive 3D engine is JavaScript using Three.js/WebGL. The application is split into modules under `js/` rather than one monolithic script.
 
-1. line / polyline / arc drawing directly in the viewport
-2. automatic face creation from closed sketches
-3. direct face Push/Pull on existing solids
-4. endpoint, midpoint, face, axis, parallel, and perpendicular inferencing
-5. true guide lines and guide points
-6. groups and linked Components/instances
-7. mirror and rectangular/circular arrays
-8. constrained sketch mode with dimensions
-9. fillet, chamfer, shell/hollow, and hole tools
-10. editable modeling-history tree
-11. STEP/BRep solid kernel for more reliable engineering geometry
-12. OBJ/GLTF/STEP import/export as the geometry kernel grows
+The long-term exact-solid architecture is:
 
-A WebAssembly OpenCascade kernel remains a strong candidate for the later BRep/STEP phase. The current mesh-based core is appropriate for fast browser prototyping and STL-oriented work, but a true solid kernel will be better for advanced mechanical CAD.
+- HTML/CSS — menus, toolbars, trays, dialogs
+- JavaScript/Three.js — viewport, interaction, selection, snapping, rendering
+- WebAssembly B-Rep CAD kernel — future exact engineering solid operations and STEP workflows
 
-## Project files
+All model coordinates are **Z-up** and internal length units are **millimeters**. The interface can display millimeters or inches.
 
-- `index.html` — application interface
-- `styles.css` — responsive layout and visual styling
-- `app.js` — scene, modeling tools, measurements, project data, import/export
-- `axis-adapter.js` — STL Z-up ↔ viewport Y-up conversion
-- `bootstrap.js` — loads the axis adapter before the main application
-- `THIRD_PARTY.md` — third-party library notes
+## Status
+
+v1.0.0 is the first integrated CAD-style interface and modeling engine. Static syntax/reference checks have been performed. Browser behavior should still be exercised on the actual desktop/mobile browsers and real models before treating every advanced operation as production-grade CAD.
