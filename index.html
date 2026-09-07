@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111827" />
-  <title>Render Studio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#d9d9d9" />
+  <title>Render Studio CAD</title>
   <link rel="stylesheet" href="./styles.css" />
   <script type="importmap">
   {
@@ -16,156 +16,71 @@
   </script>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand-wrap">
-    <div class="brand">Render <span>Studio</span></div>
-    <div class="version">v0.2.0</div>
+<div id="app" class="cad-app">
+  <svg class="icon-defs" aria-hidden="true"><defs>
+    <symbol id="i-select" viewBox="0 0 24 24"><path d="M5 3l13 8-6 2 4 7-3 1-4-7-4 4z" fill="currentColor"/></symbol>
+    <symbol id="i-line" viewBox="0 0 24 24"><path d="M4 19L18 5"/><path d="M3 20l4-1-3-3z" fill="currentColor"/><path d="M17 4l3 3"/></symbol>
+    <symbol id="i-freehand" viewBox="0 0 24 24"><path d="M3 17c4-9 6 5 10-4s5 3 8-6"/></symbol>
+    <symbol id="i-rect" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></symbol>
+    <symbol id="i-arc" viewBox="0 0 24 24"><path d="M4 17A13 13 0 0 1 19 6"/><circle cx="4" cy="17" r="1.5" fill="currentColor"/><circle cx="19" cy="6" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M12 2l-3 3m3-3l3 3M22 12l-3-3m3 3l-3 3M12 22l3-3m-3 3l-3-3M2 12l3 3m-3-3l3-3"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M5 8a8 8 0 1 1-1 8"/><path d="M5 3v5H0"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><path d="M5 19L19 5M13 5h6v6M11 19H5v-6"/></symbol>
+    <symbol id="i-pushpull" viewBox="0 0 24 24"><path d="M5 10l7-4 7 4-7 4z"/><path d="M5 10v7l7 4 7-4v-7M12 14v7"/><path d="M12 2v7M9 5l3-3 3 3"/></symbol>
+    <symbol id="i-offset" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"/><rect x="8" y="8" width="8" height="8"/></symbol>
+    <symbol id="i-tape" viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M7 6v4m3-4v2m3-2v4m3-4v2"/></symbol>
+    <symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M3 9c3-7 14-8 18-2M21 15c-3 7-14 8-18 2"/><path d="M18 3l3 4-5 1M6 21l-3-4 5-1"/></symbol>
+    <symbol id="i-pan" viewBox="0 0 24 24"><path d="M8 12V6a2 2 0 0 1 4 0v5V4a2 2 0 0 1 4 0v7V6a2 2 0 0 1 4 0v9c0 4-3 7-7 7h-2c-3 0-5-2-6-4l-2-4a2 2 0 0 1 3-2l2 2"/></symbol>
+    <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L21 21M10 7v6M7 10h6"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M4 8l8-4 8 4-8 4zM4 8v9l8 4 8-4V8M12 12v9"/></symbol>
+    <symbol id="i-cylinder" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/></symbol>
+    <symbol id="i-sphere" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c3 2 3 14 0 16M12 4c-3 2-3 14 0 16"/></symbol>
+    <symbol id="i-extrude" viewBox="0 0 24 24"><rect x="5" y="10" width="9" height="9"/><path d="M10 5h9v9M14 10l5-5M16 5h3v3"/></symbol>
+    <symbol id="i-revolve" viewBox="0 0 24 24"><path d="M7 18V6h4c4 0 6 2 6 6s-2 6-6 6z"/><path d="M4 8C6 3 16 2 20 7M20 7l-1-5M20 7l-5-1"/></symbol>
+    <symbol id="i-sweep" viewBox="0 0 24 24"><circle cx="6" cy="17" r="3"/><path d="M8 15c4-7 7-8 12-8M17 4l3 3-3 3"/></symbol>
+    <symbol id="i-loft" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="6" ry="2"/><ellipse cx="12" cy="19" rx="3" ry="1.5"/><path d="M6 5l3 14M18 5l-3 14"/></symbol>
+    <symbol id="i-hole" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"/><circle cx="12" cy="12" r="4"/></symbol>
+    <symbol id="i-fillet" viewBox="0 0 24 24"><path d="M5 19V8c0-2 1-3 3-3h11"/><path d="M5 12c0-4 3-7 7-7"/></symbol>
+    <symbol id="i-shell" viewBox="0 0 24 24"><path d="M4 8l8-4 8 4-8 4zM4 8v9l8 4 8-4V8"/><path d="M8 10v5l4 2 4-2v-5"/></symbol>
+  </defs></svg>
+  <div class="app-titlebar"><span class="app-title">Render Studio CAD</span><span class="document-title">Untitled</span><span class="version">v1.0.0</span></div>
+  <nav class="menu-bar" aria-label="Application menu">
+    <div class="menu-root"><button class="menu-trigger" data-menu="fileMenu">File</button><div id="fileMenu" class="menu-popup"><button data-command-target="newProjectBtn">New</button><button data-command-target="openProjectBtn">Open…</button><button data-command-target="saveProjectBtn">Save Project</button><div class="menu-separator"></div><button data-command-target="stlInput">Import STL…</button><button data-command-target="exportStlBtn">Export STL…</button><button data-command-target="exportObjBtn">Export OBJ…</button></div></div>
+    <div class="menu-root"><button class="menu-trigger" data-menu="editMenu">Edit</button><div id="editMenu" class="menu-popup"><button data-command-target="undoBtn">Undo <span>Ctrl+Z</span></button><button data-command-target="redoBtn">Redo <span>Ctrl+Shift+Z</span></button><div class="menu-separator"></div><button data-command-target="duplicateBtn">Duplicate</button><button data-command-target="deleteBtn">Delete <span>Del</span></button><button data-command-target="groupBtn">Make Group</button><button data-command-target="makeComponentBtn">Make Component</button></div></div>
+    <div class="menu-root"><button class="menu-trigger" data-menu="viewMenu">View</button><div id="viewMenu" class="menu-popup wide-menu"><div class="menu-heading">Toolbars</div><label><input type="checkbox" data-toggle-toolbar="gettingStartedToolbar" checked> Getting Started</label><label><input type="checkbox" data-toggle-toolbar="largeToolsetToolbar" checked> Large Tool Set</label><label><input type="checkbox" data-toggle-toolbar="cameraToolbar"> Camera</label><label><input type="checkbox" data-toggle-toolbar="solidToolbar"> Solid Tools</label><label><input type="checkbox" data-toggle-toolbar="shapesToolbar"> Shapes</label><div class="menu-separator"></div><button data-command-target="fitViewBtn">Zoom Extents</button><button data-command-target="axesToggle">Axes</button></div></div>
+    <div class="menu-root"><button class="menu-trigger" data-menu="cameraMenu">Camera</button><div id="cameraMenu" class="menu-popup"><button data-command-target="orbitTool">Orbit <span>O</span></button><button data-command-target="panTool">Pan <span>H</span></button><button data-command-target="zoomTool">Zoom <span>Z</span></button><button data-command-target="fitViewBtn">Zoom Extents</button><div class="menu-separator"></div><button data-command-target="viewIsoCmd">Iso</button><button data-command-target="viewTopCmd">Top</button><button data-command-target="viewFrontCmd">Front</button><button data-command-target="viewRightCmd">Right</button><div class="menu-separator"></div><button data-command-target="orthoToggleBtn">Perspective / Parallel Projection</button></div></div>
+    <div class="menu-root"><button class="menu-trigger" data-menu="drawMenu">Draw</button><div id="drawMenu" class="menu-popup"><button data-command-target="lineCommand">Line / Pencil <span>L</span></button><button data-command-target="freehandCommand">Freehand</button><button data-command-target="rectangleCommand">Rectangle <span>R</span></button><button data-command-target="rotatedRectangleCommand">Rotated Rectangle</button><button data-command-target="circleCommand">Circle <span>C</span></button><button data-command-target="polygonCommand">Polygon</button><button data-command-target="arc2Command">2-Point Arc</button><button data-command-target="arc3Command">3-Point Arc</button><button data-command-target="pieCommand">Pie</button></div></div>
+    <div class="menu-root"><button class="menu-trigger" data-menu="toolsMenu">Tools</button><div id="toolsMenu" class="menu-popup two-column-menu"><button data-command-target="selectTool">Select <span>Space</span></button><button data-command-target="lassoTool">Box Select</button><button data-command-target="moveTool">Move <span>M</span></button><button data-command-target="rotateTool">Rotate <span>Q</span></button><button data-command-target="scaleTool">Scale <span>S</span></button><button data-command-target="pushPullBtn">Push / Pull <span>P</span></button><button data-command-target="offsetSketchBtn">Offset <span>F</span></button><button data-command-target="sweepBtn">Follow Me / Sweep</button><button data-command-target="guideBtn">Tape Measure / Guide <span>T</span></button><button data-command-target="protractorBtn">Protractor</button><button data-command-target="measureBtn">Measure</button><div class="menu-separator full-span"></div><button data-command-target="extrudeBtn">Extrude</button><button data-command-target="revolveBtn">Revolve</button><button data-command-target="loftBtn">Loft</button><button data-command-target="holeBtn">Hole</button><button data-command-target="filletBtn">Fillet</button><button data-command-target="chamferBtn">Chamfer</button><button data-command-target="shellBtn">Shell</button><button data-command-target="unionBtn">Union</button><button data-command-target="subtractBtn">Subtract</button><button data-command-target="intersectBtn">Intersect</button></div></div>
+    <div class="menu-root"><button class="menu-trigger" data-menu="windowMenu">Window</button><div id="windowMenu" class="menu-popup wide-menu"><label><input type="checkbox" data-toggle-tray="entityInfoTray" checked> Entity Info</label><label><input type="checkbox" data-toggle-tray="outlinerTray" checked> Outliner</label><label><input type="checkbox" data-toggle-tray="modelInfoTray"> Model Info</label><label><input type="checkbox" data-toggle-tray="toolSettingsTray"> Tool Settings</label><label><input type="checkbox" data-toggle-tray="tagsTray"> Tags</label><label><input type="checkbox" data-toggle-tray="scenesTray"> Scenes</label><label><input type="checkbox" data-toggle-tray="stylesTray"> Styles & Lighting</label><label><input type="checkbox" data-toggle-tray="inspectTray"> Inspector</label><label><input type="checkbox" data-toggle-tray="historyTray"> Feature History</label></div></div>
+    <div class="menu-root"><button class="menu-trigger" data-menu="helpMenu">Help</button><div id="helpMenu" class="menu-popup"><button data-command-target="commandSearchBtn">Find a Tool… <span>Shift+S</span></button><button data-command-target="aboutBtn">About Render Studio CAD</button></div></div>
+  </nav>
+  <div id="workspace" class="workspace">
+    <div id="dockTop" class="dock dock-top" data-dock-zone="top"></div><div id="dockLeft" class="dock dock-left" data-dock-zone="left"></div><div id="dockRight" class="dock dock-right" data-dock-zone="right"></div>
+    <section id="viewportFrame" class="viewport-frame"><div id="viewport" tabindex="0" aria-label="3D modeling viewport"></div><div id="measurementBar" class="measurement-bar"><span id="toolPrompt">Select an object or choose a tool.</span><label>Measurements <input id="measurementInput" type="text" placeholder="Type exact value, then Enter" autocomplete="off" /></label></div><div class="statusbar"><span id="statusText">Ready.</span><span id="selectionInfo">No selection</span></div></section>
+    <div id="trayDockLeft" class="tray-dock tray-dock-left" data-tray-dock="left"></div><div id="trayDockRight" class="tray-dock tray-dock-right" data-tray-dock="right"></div>
+    <div id="gettingStartedToolbar" class="floating-toolbar horizontal" data-default-dock="top"><div class="toolbar-handle" title="Drag toolbar">⋮⋮</div><button class="icon-button" data-command-target="selectTool" data-tool-proxy="select" title="Select (Space)"><svg><use href="#i-select"/></svg></button><span class="tool-separator"></span><button class="icon-button" data-command-target="lineCommand" data-tool-proxy="line" title="Line / Pencil (L)"><svg><use href="#i-line"/></svg></button><button class="icon-button" data-command-target="rectangleCommand" data-tool-proxy="rectangle" title="Rectangle (R)"><svg><use href="#i-rect"/></svg></button><button class="icon-button" data-command-target="circleCommand" data-tool-proxy="circle" title="Circle (C)"><svg><use href="#i-circle"/></svg></button><span class="tool-separator"></span><button class="icon-button" data-command-target="pushPullBtn" title="Push / Pull (P)"><svg><use href="#i-pushpull"/></svg></button><button class="icon-button" data-command-target="moveTool" data-tool-proxy="move" title="Move (M)"><svg><use href="#i-move"/></svg></button><button class="icon-button" data-command-target="rotateTool" data-tool-proxy="rotate" title="Rotate (Q)"><svg><use href="#i-rotate"/></svg></button><button class="icon-button" data-command-target="scaleTool" data-tool-proxy="scale" title="Scale (S)"><svg><use href="#i-scale"/></svg></button><button class="icon-button" data-command-target="guideBtn" data-tool-proxy="guide" title="Tape Measure / Guide (T)"><svg><use href="#i-tape"/></svg></button><span class="tool-separator"></span><button class="icon-button" data-command-target="orbitTool" data-tool-proxy="orbit" title="Orbit (O)"><svg><use href="#i-orbit"/></svg></button><button class="icon-button" data-command-target="panTool" data-tool-proxy="pan" title="Pan (H)"><svg><use href="#i-pan"/></svg></button><button class="icon-button" data-command-target="zoomTool" data-tool-proxy="zoom" title="Zoom (Z)"><svg><use href="#i-zoom"/></svg></button><button class="icon-button" data-command-target="fitViewBtn" title="Zoom Extents"><svg><use href="#i-fit"/></svg></button></div>
+    <div id="largeToolsetToolbar" class="floating-toolbar vertical" data-default-dock="left"><div class="toolbar-handle" title="Drag toolbar">⠿</div><button class="icon-button" data-command-target="selectTool" data-tool-proxy="select" title="Select"><svg><use href="#i-select"/></svg></button><button class="icon-button" data-command-target="lineCommand" data-tool-proxy="line" title="Line / Pencil"><svg><use href="#i-line"/></svg></button><button class="icon-button" data-command-target="freehandCommand" data-tool-proxy="freehand" title="Freehand"><svg><use href="#i-freehand"/></svg></button><button class="icon-button" data-command-target="rectangleCommand" data-tool-proxy="rectangle" title="Rectangle"><svg><use href="#i-rect"/></svg></button><button class="icon-button" data-command-target="circleCommand" data-tool-proxy="circle" title="Circle"><svg><use href="#i-circle"/></svg></button><button class="icon-button" data-command-target="arc3Command" data-tool-proxy="arc3" title="Arc"><svg><use href="#i-arc"/></svg></button><span class="tool-separator"></span><button class="icon-button" data-command-target="pushPullBtn" title="Push / Pull"><svg><use href="#i-pushpull"/></svg></button><button class="icon-button" data-command-target="offsetSketchBtn" title="Offset"><svg><use href="#i-offset"/></svg></button><button class="icon-button" data-command-target="moveTool" data-tool-proxy="move" title="Move"><svg><use href="#i-move"/></svg></button><button class="icon-button" data-command-target="rotateTool" data-tool-proxy="rotate" title="Rotate"><svg><use href="#i-rotate"/></svg></button><button class="icon-button" data-command-target="scaleTool" data-tool-proxy="scale" title="Scale"><svg><use href="#i-scale"/></svg></button><button class="icon-button" data-command-target="guideBtn" data-tool-proxy="guide" title="Tape Measure / Guide"><svg><use href="#i-tape"/></svg></button><span class="tool-separator"></span><button class="icon-button" data-command-target="orbitTool" data-tool-proxy="orbit" title="Orbit"><svg><use href="#i-orbit"/></svg></button><button class="icon-button" data-command-target="panTool" data-tool-proxy="pan" title="Pan"><svg><use href="#i-pan"/></svg></button><button class="icon-button" data-command-target="zoomTool" data-tool-proxy="zoom" title="Zoom"><svg><use href="#i-zoom"/></svg></button></div>
+    <div id="cameraToolbar" class="floating-toolbar horizontal toolbar-hidden" data-default-dock="top"><div class="toolbar-handle">⋮⋮</div><button class="icon-button" data-command-target="orbitTool" data-tool-proxy="orbit"><svg><use href="#i-orbit"/></svg></button><button class="icon-button" data-command-target="panTool" data-tool-proxy="pan"><svg><use href="#i-pan"/></svg></button><button class="icon-button" data-command-target="zoomTool" data-tool-proxy="zoom"><svg><use href="#i-zoom"/></svg></button><button class="icon-button" data-command-target="fitViewBtn"><svg><use href="#i-fit"/></svg></button><button class="text-tool" data-command-target="viewIsoCmd">Iso</button><button class="text-tool" data-command-target="viewTopCmd">Top</button><button class="text-tool" data-command-target="viewFrontCmd">Front</button><button class="text-tool" data-command-target="viewRightCmd">Right</button></div>
+    <div id="solidToolbar" class="floating-toolbar horizontal toolbar-hidden" data-default-dock="top"><div class="toolbar-handle">⋮⋮</div><button class="icon-button" data-command-target="extrudeBtn"><svg><use href="#i-extrude"/></svg></button><button class="icon-button" data-command-target="revolveBtn"><svg><use href="#i-revolve"/></svg></button><button class="icon-button" data-command-target="sweepBtn"><svg><use href="#i-sweep"/></svg></button><button class="icon-button" data-command-target="loftBtn"><svg><use href="#i-loft"/></svg></button><button class="icon-button" data-command-target="holeBtn"><svg><use href="#i-hole"/></svg></button><button class="icon-button" data-command-target="filletBtn"><svg><use href="#i-fillet"/></svg></button><button class="icon-button" data-command-target="shellBtn"><svg><use href="#i-shell"/></svg></button></div>
+    <div id="shapesToolbar" class="floating-toolbar horizontal toolbar-hidden" data-default-dock="top"><div class="toolbar-handle">⋮⋮</div><button class="icon-button" data-command-target="boxCommand"><svg><use href="#i-box"/></svg></button><button class="icon-button" data-command-target="cylinderCommand"><svg><use href="#i-cylinder"/></svg></button><button class="icon-button" data-command-target="sphereCommand"><svg><use href="#i-sphere"/></svg></button><button class="text-tool" data-command-target="coneCommand">Cone</button><button class="text-tool" data-command-target="torusCommand">Torus</button><button class="text-tool" data-command-target="tubeCommand">Tube</button><button class="text-tool" data-command-target="coilCommand">Coil</button></div>
+    <section id="outlinerTray" class="tool-tray" data-default-tray-dock="right"><header class="tray-header"><span>Outliner</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><div id="sceneList" class="scene-list"></div></div></section>
+    <section id="entityInfoTray" class="tool-tray" data-default-tray-dock="right"><header class="tray-header"><span>Entity Info</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><div id="noSelection" class="empty-state">Select an object to edit it.</div><div id="properties" hidden><label>Name<input id="objectName" type="text" maxlength="80" /></label><label>Tag<select id="objectTag"></select></label><div class="section-title-row"><h3>Position</h3><button id="zeroPositionBtn" class="tiny">Zero</button></div><div class="triplet"><label>X<input id="posX" type="number" step="0.1" /></label><label>Y<input id="posY" type="number" step="0.1" /></label><label>Z<input id="posZ" type="number" step="0.1" /></label></div><h3>Rotation</h3><div class="triplet"><label>X<input id="rotX" type="number" step="1" /></label><label>Y<input id="rotY" type="number" step="1" /></label><label>Z<input id="rotZ" type="number" step="1" /></label></div><h3>Scale</h3><div class="triplet"><label>X<input id="scaleX" type="number" step="0.01" /></label><label>Y<input id="scaleY" type="number" step="0.01" /></label><label>Z<input id="scaleZ" type="number" step="0.01" /></label></div><div id="parametricProperties"></div><h3>Material</h3><label>Color<input id="materialColor" type="color" value="#6aa9ff" /></label><label>Roughness<input id="roughness" type="range" min="0" max="1" step="0.01" value="0.6" /></label><label>Metalness<input id="metalness" type="range" min="0" max="1" step="0.01" value="0.05" /></label><label class="check-label"><input id="smoothShading" type="checkbox" checked /> Smooth shading</label><h3>Measured</h3><div id="measurements" class="info-card"></div></div></div></section>
+    <section id="modelInfoTray" class="tool-tray tray-hidden" data-default-tray-dock="right"><header class="tray-header"><span>Model Info</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><label>Units<select id="unitsSelect"><option value="mm">Millimeters</option><option value="in">Inches</option></select></label><label>Grid spacing (mm)<input id="gridSpacing" type="number" min="0.01" step="0.1" value="10" /></label><label>Move snap (mm)<input id="moveSnap" type="number" min="0" step="0.1" value="1" /></label><label>Angle snap (°)<input id="angleSnap" type="number" min="0" max="90" step="1" value="15" /></label><label class="check-label"><input id="snapToggle" type="checkbox" checked /> Enable snapping</label><label class="check-label"><input id="axesToggle" type="checkbox" checked /> Show axes</label></div></section>
+    <section id="toolSettingsTray" class="tool-tray tray-hidden" data-default-tray-dock="right"><header class="tray-header"><span>Tool Settings</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><label>Sketch plane<select id="sketchPlane"><option value="XY">XY (Top)</option><option value="XZ">XZ (Front)</option><option value="YZ">YZ (Right)</option></select></label><label>Polygon sides<input id="polygonSides" type="number" min="3" max="128" value="6" /></label><label>Offset distance (mm)<input id="sketchOffsetDistance" type="number" step="0.1" value="2" /></label><label>Guide / plane offset (mm)<input id="constructionDistance" type="number" step="0.1" value="10" /></label><label>Construction angle (°)<input id="constructionAngle" type="number" step="1" value="45" /></label></div></section>
+    <section id="tagsTray" class="tool-tray tray-hidden" data-default-tray-dock="right"><header class="tray-header"><span>Tags</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><div class="row-inline"><input id="newTagName" type="text" placeholder="New tag" maxlength="40" /><button id="addTagBtn">Add</button></div><div id="tagList" class="mini-list"></div></div></section>
+    <section id="scenesTray" class="tool-tray tray-hidden" data-default-tray-dock="right"><header class="tray-header"><span>Scenes</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><div class="row-inline"><input id="newSceneName" type="text" placeholder="Scene name" maxlength="50" /><button id="addSceneBtn">Save View</button></div><div id="sceneViewList" class="mini-list"></div></div></section>
+    <section id="stylesTray" class="tool-tray tray-hidden" data-default-tray-dock="right"><header class="tray-header"><span>Styles & Lighting</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><label>View style<select id="displayMode"><option value="shaded">Shaded</option><option value="edges">Shaded + Edges</option><option value="wireframe">Wireframe</option><option value="xray">X-Ray</option><option value="monochrome">Monochrome</option></select></label><label>Background<input id="backgroundColor" type="color" value="#d7e7f4" /></label><label>Environment light<input id="ambientIntensity" type="range" min="0" max="5" step="0.1" value="2.2" /></label><label>Key light<input id="keyIntensity" type="range" min="0" max="8" step="0.1" value="3.2" /></label><div class="row-inline"><button id="addPointLightBtn">Point Light</button><button id="addSpotLightBtn">Spot Light</button></div></div></section>
+    <section id="inspectTray" class="tool-tray tray-hidden" data-default-tray-dock="right"><header class="tray-header"><span>Inspector</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><div class="tool-grid two"><button data-command-target="measureBtn">Measure</button><button data-command-target="sectionBtn">Section</button><button data-command-target="interferenceBtn">Interference</button><button data-command-target="massPropsBtn">Mass Properties</button><button data-command-target="meshCheckBtn">Mesh Check</button><button data-command-target="repairMeshBtn">Repair Mesh</button></div><div id="inspectOutput" class="info-card">Select an object or inspection tool.</div></div></section>
+    <section id="historyTray" class="tool-tray tray-hidden" data-default-tray-dock="right"><header class="tray-header"><span>Feature History</span><span class="tray-actions"><button data-collapse-tray>−</button><button data-close-tray>×</button></span></header><div class="tray-body"><div id="historyList" class="history-list"></div></div></section>
   </div>
-  <div class="top-actions">
-    <button id="undoBtn" class="icon-btn" title="Undo (Ctrl+Z)">↶</button>
-    <button id="redoBtn" class="icon-btn" title="Redo (Ctrl+Shift+Z)">↷</button>
-    <button id="aboutBtn" class="secondary">About</button>
-    <button id="saveProjectBtn" class="secondary">Save Project</button>
-    <label class="secondary file-btn">Open Project<input id="openProjectInput" type="file" accept="application/json,.json"></label>
-  </div>
-</header>
-
-<div class="app-shell">
-  <aside class="left-panel panel">
-    <section class="panel-section">
-      <h2>Create 3D</h2>
-      <div class="tool-grid">
-        <button data-add="box">Box</button><button data-add="cylinder">Cylinder</button>
-        <button data-add="sphere">Sphere</button><button data-add="cone">Cone</button>
-        <button data-add="torus">Torus</button><button data-add="tube">Tube</button>
-      </div>
-    </section>
-
-    <section class="panel-section">
-      <h2>Sketch Profiles</h2>
-      <p class="hint">Profiles are flat shapes you can Push/Pull into solids or sweep along a path.</p>
-      <div class="tool-grid">
-        <button data-profile="rectangle">Rectangle</button>
-        <button data-profile="circle">Circle</button>
-      </div>
-      <label>Push/Pull distance (mm)<input id="pushPullDistance" type="number" value="25" step="0.1"></label>
-      <button id="pushPullBtn" class="primary full">Push / Pull Selected Profile</button>
-      <label>Offset distance (mm)<input id="offsetDistance" type="number" value="2" step="0.1"></label>
-      <button id="offsetBtn" class="secondary full">Offset Selected Profile</button>
-    </section>
-
-    <section class="panel-section">
-      <h2>Paths & Follow Me</h2>
-      <div class="tool-grid three">
-        <button data-path="line">Line Path</button>
-        <button data-path="arc">Arc Path</button>
-        <button data-path="circle">Circle Path</button>
-      </div>
-      <p class="hint">Check one profile and one path in Scene, then use Follow Me.</p>
-      <button id="followMeBtn" class="primary full" disabled>Follow Me</button>
-    </section>
-
-    <section class="panel-section">
-      <h2>Solid Tools</h2>
-      <p class="hint">Check exactly two solid meshes. First checked = A, second = B.</p>
-      <div class="tool-grid three">
-        <button id="unionBtn" disabled>Union</button>
-        <button id="subtractBtn" disabled>A − B</button>
-        <button id="intersectBtn" disabled>Intersect</button>
-      </div>
-    </section>
-
-    <section class="panel-section">
-      <h2>Files</h2>
-      <div class="button-stack">
-        <label class="primary file-btn">Import STL<input id="stlInput" type="file" accept=".stl,model/stl"></label>
-        <button id="exportStlBtn" class="secondary">Export Selected / Scene STL</button>
-      </div>
-    </section>
-
-    <section class="panel-section grow-section">
-      <div class="section-title-row"><h2>Scene</h2><div><button id="selectAllBtn" class="tiny">All</button><button id="clearSelectionBtn" class="tiny">None</button></div></div>
-      <div id="sceneList" class="scene-list"></div>
-    </section>
-  </aside>
-
-  <main class="viewport-wrap">
-    <div class="viewport-toolbar">
-      <div class="toolbar-group">
-        <button id="selectTool" class="active">Select</button>
-        <button id="moveTool">Move</button><button id="rotateTool">Rotate</button><button id="scaleTool">Scale</button>
-        <button id="measureTool">Measure</button>
-      </div>
-      <div class="toolbar-group compact-group">
-        <label class="snap-toggle"><input id="snapEnabled" type="checkbox" checked> Snap</label>
-        <input id="snapStep" class="toolbar-number" type="number" min="0.1" value="1" step="0.1" title="Move snap in mm">
-      </div>
-      <div class="toolbar-group">
-        <button data-view="iso">Iso</button><button data-view="top">Top</button><button data-view="front">Front</button><button data-view="right">Right</button>
-      </div>
-      <div class="toolbar-group">
-        <button id="fitViewBtn">Fit</button><button id="toggleWireBtn">Wire</button><button id="clearGuidesBtn">Clear Guides</button>
-      </div>
-    </div>
-    <div id="viewport"></div>
-    <div id="measureReadout" class="measure-readout hidden"></div>
-    <div class="statusbar"><span id="statusText">Ready.</span><span id="selectionInfo">No selection</span></div>
-  </main>
-
-  <aside class="right-panel panel">
-    <section class="panel-section">
-      <div class="section-title-row"><h2>Properties</h2><button id="renameBtn" class="tiny">Rename</button></div>
-      <div id="noSelectionMessage" class="empty-state">Select an object to edit it.</div>
-      <div id="propertiesForm" hidden>
-        <label>Name<input id="objectName" type="text" maxlength="80"></label>
-        <div id="objectType" class="object-type"></div>
-        <label class="check-row"><input id="objectLocked" type="checkbox"> Lock object</label>
-
-        <h3>Position (mm)</h3>
-        <div class="triplet"><label>X<input id="posX" type="number" step="0.1"></label><label>Y<input id="posY" type="number" step="0.1"></label><label>Z<input id="posZ" type="number" step="0.1"></label></div>
-        <h3>Rotation (°)</h3>
-        <div class="triplet"><label>X<input id="rotX" type="number" step="1"></label><label>Y<input id="rotY" type="number" step="1"></label><label>Z<input id="rotZ" type="number" step="1"></label></div>
-        <h3>Scale</h3>
-        <div class="triplet"><label>X<input id="scaleX" type="number" step="0.01"></label><label>Y<input id="scaleY" type="number" step="0.01"></label><label>Z<input id="scaleZ" type="number" step="0.01"></label></div>
-
-        <div id="parametricParams"></div>
-
-        <div id="appearancePanel">
-          <h3>Appearance</h3>
-          <label>Color<input id="objectColor" type="color" value="#5b8def"></label>
-          <label>Roughness<input id="roughness" type="range" min="0" max="1" step="0.01" value="0.58"></label>
-          <label>Metalness<input id="metalness" type="range" min="0" max="1" step="0.01" value="0.04"></label>
-          <label class="check-row"><input id="smoothShading" type="checkbox" checked> Smooth shading</label>
-        </div>
-
-        <h3>Measured size</h3><div id="measurements" class="measure-box"></div>
-        <div class="button-stack">
-          <button id="placeOnBedBtn">Place on Ground</button><button id="centerBedBtn">Center at Origin</button>
-          <button id="duplicateBtn">Duplicate</button><button id="deleteBtn" class="danger">Delete</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel-section">
-      <h2>Precision & View</h2>
-      <label>Move snap (mm)<input id="snapStepSide" type="number" min="0.1" value="1" step="0.1"></label>
-      <label>Rotation snap (°)<input id="rotationSnap" type="number" min="1" value="15" step="1"></label>
-      <label>Grid spacing (mm)<input id="gridSpacing" type="number" min="1" value="10" step="1"></label>
-      <p class="hint">Measure mode: click two points on geometry or the ground. A temporary guide is kept until Clear Guides.</p>
-    </section>
-
-    <section class="panel-section">
-      <h2>Rendering</h2>
-      <label>Background<input id="backgroundColor" type="color" value="#0b1020"></label>
-      <label>Light intensity<input id="lightIntensity" type="range" min="0.2" max="5" value="2.2" step="0.1"></label>
-      <label class="check-row"><input id="shadowsEnabled" type="checkbox" checked> Shadows</label>
-      <label class="check-row"><input id="axesEnabled" type="checkbox" checked> Show axes</label>
-      <label class="check-row"><input id="gridEnabled" type="checkbox" checked> Show grid</label>
-    </section>
-  </aside>
+  <div id="commandBank" hidden><button id="newProjectBtn"></button><button id="openProjectBtn"></button><input id="openProjectInput" type="file" accept=".json,application/json" /><button id="saveProjectBtn"></button><button id="undoBtn"></button><button id="redoBtn"></button><button id="commandSearchBtn"></button><button id="aboutBtn"></button><button id="selectTool"></button><button id="moveTool"></button><button id="rotateTool"></button><button id="scaleTool"></button><button id="lassoTool"></button><button id="orbitTool"></button><button id="panTool"></button><button id="zoomTool"></button><button id="duplicateBtn"></button><button id="mirrorBtn"></button><button id="alignBtn"></button><button id="placeGroundBtn"></button><button id="deleteBtn"></button><button id="boxCommand" data-primitive="box"></button><button id="cylinderCommand" data-primitive="cylinder"></button><button id="sphereCommand" data-primitive="sphere"></button><button id="coneCommand" data-primitive="cone"></button><button id="torusCommand" data-primitive="torus"></button><button id="tubeCommand" data-primitive="tube"></button><button id="coilCommand" data-primitive="coil"></button><button id="lineCommand" data-sketch="line"></button><button id="freehandCommand" data-sketch="freehand"></button><button id="rectangleCommand" data-sketch="rectangle"></button><button id="rotatedRectangleCommand" data-sketch="rotatedRectangle"></button><button id="circleCommand" data-sketch="circle"></button><button id="polygonCommand" data-sketch="polygon"></button><button id="arc2Command" data-sketch="arc2"></button><button id="arc3Command" data-sketch="arc3"></button><button id="pieCommand" data-sketch="pie"></button><button id="offsetSketchBtn"></button><button id="trimSketchBtn"></button><button id="extendSketchBtn"></button><button id="mirrorSketchBtn"></button><button data-constraint="horizontal"></button><button data-constraint="vertical"></button><button data-constraint="coincident"></button><button data-constraint="parallel"></button><button data-constraint="perpendicular"></button><button data-constraint="equal"></button><button data-constraint="midpoint"></button><button data-constraint="concentric"></button><button data-constraint="fix"></button><button id="pushPullBtn"></button><button id="extrudeBtn"></button><button id="revolveBtn"></button><button id="sweepBtn"></button><button id="loftBtn"></button><button id="ribBtn"></button><button id="holeBtn"></button><button id="threadBtn"></button><button id="filletBtn"></button><button id="chamferBtn"></button><button id="shellBtn"></button><button id="draftBtn"></button><button id="offsetFaceBtn"></button><button id="splitBodyBtn"></button><button id="unionBtn"></button><button id="subtractBtn"></button><button id="intersectBtn"></button><button id="rectPatternBtn"></button><button id="circularPatternBtn"></button><button id="pathPatternBtn"></button><button id="guideBtn"></button><button id="measureBtn"></button><button id="protractorBtn"></button><button id="offsetPlaneBtn"></button><button id="anglePlaneBtn"></button><button id="midPlaneBtn"></button><button id="axisBtn"></button><button id="pointBtn"></button><button id="clearGuidesBtn"></button><button id="sectionBtn"></button><button id="massPropsBtn"></button><button id="meshCheckBtn"></button><button id="repairMeshBtn"></button><button id="interferenceBtn"></button><button id="groupBtn"></button><button id="ungroupBtn"></button><button id="makeComponentBtn"></button><button id="instanceComponentBtn"></button><button id="lockBtn"></button><button id="hideBtn"></button><button id="fitViewBtn"></button><button id="orthoToggleBtn"></button><button id="viewIsoCmd" data-view="iso"></button><button id="viewTopCmd" data-view="top"></button><button id="viewFrontCmd" data-view="front"></button><button id="viewRightCmd" data-view="right"></button><input id="stlInput" type="file" accept=".stl,model/stl" /><button id="exportStlBtn"></button><button id="exportObjBtn"></button></div>
 </div>
-
-<dialog id="aboutDialog"><div class="dialog-head"><h2>Render Studio v0.2.0</h2><button id="closeAboutBtn">✕</button></div><p>A browser-based 3D modeling workspace focused on direct, precise modeling.</p></dialog>
-<script type="module" src="./bootstrap.js"></script>
+<div id="selectionRect" class="selection-rect" hidden></div>
+<dialog id="operationDialog" class="operation-dialog"><form id="operationForm" method="dialog"><div class="dialog-header"><h2 id="operationTitle">Operation</h2><button id="operationCloseBtn" type="button">✕</button></div><div id="operationFields"></div><div class="dialog-actions"><button id="operationCancelBtn" type="button">Cancel</button><button id="operationApplyBtn" class="primary" type="submit">Apply</button></div></form></dialog>
+<dialog id="searchDialog" class="search-dialog"><div class="dialog-header"><h2>Find a Tool</h2><button id="searchCloseBtn">✕</button></div><input id="toolSearchInput" type="search" placeholder="Try: fillet, guide, push pull, mirror…" /><div id="toolSearchResults" class="search-results"></div></dialog>
+<dialog id="aboutDialog" class="about-dialog"><div class="dialog-header"><h2>Render Studio CAD v1.0.0</h2><button id="aboutCloseBtn">✕</button></div><p>A CAD/modeling application with a SketchUp-style tool-first interface and Fusion-style precision underneath.</p><p>Choose a tool from a toolbar or menu, then work directly in the 3D viewport. Toolbars and trays can be moved and docked around the workspace.</p><p><strong>Keyboard:</strong> Space Select, M Move, Q Rotate, S Scale, L Line, R Rectangle, C Circle, P Push/Pull, T Tape/Guide, O Orbit, H Pan, Z Zoom, Delete delete, Ctrl+Z undo, Ctrl+Shift+Z redo, Shift+S tool search.</p></dialog>
+<script type="module" src="./js/bootstrap.js"></script>
 </body>
 </html>
