@@ -20,12 +20,20 @@ function hitModel(e){pointerRay(e);const hits=raycaster.intersectObjects(allItem
 
 function setTool(tool,prompt){
   app.tool=tool;app.drawPoints=[];app.freehandPoints=[];app.hoverPoint=null;app.drawing=false;
-  ['selectTool','moveTool','rotateTool','scaleTool','lassoTool'].forEach(id=>$(id)?.classList.remove('tool-active'));
-  const map={select:'selectTool',move:'moveTool',rotate:'rotateTool',scale:'scaleTool',boxSelect:'lassoTool'};if(map[tool])$(map[tool]).classList.add('tool-active');
+  ['selectTool','moveTool','rotateTool','scaleTool','lassoTool','orbitTool','panTool','zoomTool'].forEach(id=>$(id)?.classList.remove('tool-active'));
+  document.querySelectorAll('[data-tool-proxy]').forEach(b=>b.classList.toggle('tool-active',b.dataset.toolProxy===tool));
+  const map={select:'selectTool',move:'moveTool',rotate:'rotateTool',scale:'scaleTool',boxSelect:'lassoTool',orbit:'orbitTool',pan:'panTool',zoom:'zoomTool'};if(map[tool])$(map[tool])?.classList.add('tool-active');
+  orbit.mouseButtons.LEFT = tool==='orbit' ? THREE.MOUSE.ROTATE : tool==='pan' ? THREE.MOUSE.PAN : tool==='zoom' ? THREE.MOUSE.DOLLY : -1;
+  orbit.mouseButtons.MIDDLE = THREE.MOUSE.ROTATE;
+  orbit.mouseButtons.RIGHT = THREE.MOUSE.PAN;
+  orbit.touches.ONE = tool==='orbit' ? THREE.TOUCH.ROTATE : tool==='pan' ? THREE.TOUCH.PAN : -1;
+  orbit.touches.TWO = THREE.TOUCH.DOLLY_PAN;
   if(['move','rotate','scale'].includes(tool)){transform.setMode(tool==='move'?'translate':tool);if(app.selected&&!isLocked(app.selected))transform.attach(app.selected);}else if(tool!=='select')transform.detach();
+  const cursors={select:'default',move:'move',rotate:'crosshair',scale:'nwse-resize',boxSelect:'crosshair',line:'crosshair',freehand:'crosshair',rectangle:'crosshair',rotatedRectangle:'crosshair',circle:'crosshair',polygon:'crosshair',arc2:'crosshair',arc3:'crosshair',pie:'crosshair',measure:'crosshair',guide:'crosshair',protractor:'crosshair',orbit:'grab',pan:'grab',zoom:'zoom-in'};
+  renderer.domElement.style.cursor=cursors[tool]||'crosshair';
   $('toolPrompt').textContent=prompt||toolPrompt(tool);viewport.focus();
 }
-function toolPrompt(tool){const m={select:'Click an object to select.',move:'Drag the gizmo to move. Type values in Properties for exact position.',rotate:'Drag to rotate. Angle snapping is available.',scale:'Drag to scale.',boxSelect:'Drag a box around object centers.',line:'Click start and end. Type an exact length after the first point.',freehand:'Press and drag to draw a freehand path.',rectangle:'Click opposite corners, or type width,height after the first point.',rotatedRectangle:'Click origin, direction point, then width point.',circle:'Click center and radius, or type radius after center.',polygon:'Click center and radius.',arc2:'Click start, end, then bulge point.',arc3:'Click three points on the arc.',pie:'Click center, start, then end.',measure:'Click two points to measure.',guide:'Click two points to create a guide.',protractor:'Click vertex, first ray, second ray.'};return m[tool]||'Choose points in the viewport.';}
+function toolPrompt(tool){const m={select:'Click an object to select.',move:'Drag the move gizmo. Type an exact distance when needed.',rotate:'Drag to rotate. Angle snapping is available.',scale:'Drag to scale.',boxSelect:'Drag a selection box.',orbit:'Drag to orbit around the model. Middle mouse also orbits temporarily.',pan:'Drag to pan the camera.',zoom:'Drag to zoom. Mouse wheel also zooms.',line:'Pencil: click start and end. Type an exact length after the first point.',freehand:'Press and drag to draw a freehand path.',rectangle:'Click opposite corners, or type width,height after the first point.',rotatedRectangle:'Click origin, direction point, then width point.',circle:'Click center and radius, or type radius after center.',polygon:'Click center and radius.',arc2:'Click start, end, then bulge point.',arc3:'Click three points on the arc.',pie:'Click center, start, then end.',measure:'Click two points to measure.',guide:'Click two points to create a guide.',protractor:'Click vertex, first ray, second ray.'};return m[tool]||'Choose points in the viewport.';}
 
 function finishSketchTool(){app.drawPoints=[];$('measurementInput').value='';}
 function executeSketchClick(p){const plane=currentSketchPlane(),uv=planeUV(p,plane);app.drawPoints.push(uv);
